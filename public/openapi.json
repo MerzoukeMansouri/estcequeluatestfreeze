@@ -1,0 +1,214 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Freeze Configuration API",
+    "description": "API pour gérer la configuration des jours de freeze",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "API Server"
+    }
+  ],
+  "paths": {
+    "/is-freeze": {
+      "get": {
+        "summary": "Vérifier le statut de freeze actuel",
+        "description": "Retourne un booléen indiquant si on est actuellement en période de freeze",
+        "operationId": "checkFreeze",
+        "tags": ["Status"],
+        "responses": {
+          "200": {
+            "description": "Statut de freeze récupéré avec succès",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FreezeStatus"
+                },
+                "examples": {
+                  "freeze": {
+                    "value": {
+                      "isFreeze": true
+                    },
+                    "summary": "En période de freeze"
+                  },
+                  "notFreeze": {
+                    "value": {
+                      "isFreeze": false
+                    },
+                    "summary": "Pas de freeze"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erreur serveur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/config": {
+      "get": {
+        "summary": "Obtenir la configuration actuelle",
+        "description": "Retourne la liste des jours de la semaine où le freeze est actif",
+        "operationId": "getConfig",
+        "tags": ["Configuration"],
+        "responses": {
+          "200": {
+            "description": "Configuration récupérée avec succès",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Config"
+                },
+                "example": {
+                  "freezeDays": [2, 3]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erreur serveur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Mettre à jour la configuration",
+        "description": "Met à jour les jours de freeze dans le fichier config.json",
+        "operationId": "updateConfig",
+        "tags": ["Configuration"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Config"
+              },
+              "example": {
+                "freezeDays": [2, 3, 4]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Configuration mise à jour avec succès",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "config": {
+                    "freezeDays": [2, 3, 4]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Données invalides",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalidType": {
+                    "value": {
+                      "error": "freezeDays must be an array"
+                    }
+                  },
+                  "invalidValues": {
+                    "value": {
+                      "error": "freezeDays must contain numbers between 1 and 7"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erreur serveur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FreezeStatus": {
+        "type": "object",
+        "required": ["isFreeze"],
+        "properties": {
+          "isFreeze": {
+            "type": "boolean",
+            "description": "Indique si on est actuellement en période de freeze",
+            "example": true
+          }
+        }
+      },
+      "Config": {
+        "type": "object",
+        "required": ["freezeDays"],
+        "properties": {
+          "freezeDays": {
+            "type": "array",
+            "description": "Liste des jours de la semaine où le freeze est actif (1=Lundi, 2=Mardi, ..., 7=Dimanche)",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7
+            },
+            "example": [2, 3]
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "config": {
+            "$ref": "#/components/schemas/Config"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Failed to read config"
+          }
+        }
+      }
+    }
+  }
+}

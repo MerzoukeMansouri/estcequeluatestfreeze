@@ -1,0 +1,26 @@
+name: freeze
+
+on:
+  workflow_call:
+
+jobs:
+  uat-freeze-check:
+    runs-on: self-hosted
+    outputs:
+      is_deployable: ${{ steps.check_day.outputs.is_deployable }}
+    steps:
+      - name: Get Day of Week
+        id: get_day
+        shell: bash
+        run: |
+          echo "day_of_week=$(date +'%u')" >> $GITHUB_OUTPUT
+
+      - name: Check Deploy Condition
+        id: check_day
+        shell: bash
+        run: |
+          if [[ "${{ steps.get_day.outputs.day_of_week }}" != "2" || "${{ steps.get_day.outputs.day_of_week }}" != "3" ]]; then
+            echo "is_deployable=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_deployable=false" >> $GITHUB_OUTPUT
+          fi

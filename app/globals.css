@@ -1,0 +1,21 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.freeze {
+  background-color: #000;
+  color: #fff;
+}
+
+body.not-freeze {
+  background-color: #fff;
+  color: #000;
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation API - Swagger</title>
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    .custom-header {
+      padding: 1rem 2rem;
+      background-color: #fff;
+      border-bottom: 2px solid #000;
+    }
+    .back-link {
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9rem;
+      font-family: Arial, sans-serif;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .custom-header h1 {
+      margin-top: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="custom-header">
+    <a href="/admin" class="back-link">← Retour à l'admin</a>
+    <h1>Documentation API</h1>
+  </div>
+  <div id="swagger-ui"></div>
+
+  <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function() {
+      window.ui = SwaggerUIBundle({
+        url: '/openapi.json',
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout"
+      });
+    };
+  </script>
+</body>
+</html>
