@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getConfig } from '@/lib/config-store';
+import { getConfig } from '../../../lib/config-store';
 
 // GET: Retourne si on est actuellement en freeze
 export async function GET() {

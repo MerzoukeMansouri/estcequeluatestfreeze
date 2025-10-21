@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getConfig, setConfig, type Config } from '@/lib/config-store';
+import { getConfig, setConfig, type Config } from '../../../lib/config-store';
 
 // GET: Retourne la configuration actuelle
 export async function GET() {
