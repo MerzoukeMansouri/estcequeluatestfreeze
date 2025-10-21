@@ -7,8 +7,9 @@ export async function GET() {
     const config = await getConfig();
     return NextResponse.json(config);
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to read config';
     return NextResponse.json(
-      { error: 'Failed to read config' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
@@ -43,8 +44,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, config: body });
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to update config';
     return NextResponse.json(
-      { error: 'Failed to update config' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
