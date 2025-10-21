@@ -39,15 +39,9 @@ export async function POST(request: Request) {
     }
 
     // Mettre à jour la configuration en mémoire
-    // Note: On Vercel, config should be set via FREEZE_DAYS environment variable
-    // In-memory updates only affect the current lambda instance
     setConfig(body);
 
-    const warning = process.env.FREEZE_DAYS
-      ? 'Config updated in memory, but FREEZE_DAYS environment variable takes priority'
-      : 'Config updated in memory for this session only. Set FREEZE_DAYS environment variable for persistence.';
-
-    return NextResponse.json({ success: true, config: body, warning });
+    return NextResponse.json({ success: true, config: body });
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to update config' },
