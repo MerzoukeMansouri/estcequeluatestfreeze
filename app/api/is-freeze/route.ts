@@ -14,14 +14,7 @@ export async function GET() {
     // Vérifier si aujourd'hui est un jour de freeze
     const isFreeze = config.freezeDays.includes(dayOfWeek);
 
-    return NextResponse.json({
-      isFreeze,
-      debug: {
-        dayOfWeek,
-        freezeDays: config.freezeDays,
-        envVar: process.env.FREEZE_DAYS
-      }
-    });
+    return NextResponse.json({ isFreeze });
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to check freeze status' },
