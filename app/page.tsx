@@ -14,22 +14,15 @@ export default function Home() {
   useEffect(() => {
     const checkFreeze = async () => {
       try {
-        // Récupérer la configuration
-        const response = await fetch('/api/config');
-        const config: Config = await response.json();
+        // Utiliser l'API is-freeze qui utilise la même logique partagée
+        const response = await fetch('/api/is-freeze');
+        const data = await response.json();
 
-        // Obtenir le jour de la semaine actuel
-        const now = new Date();
-        const dayOfWeek = now.getDay() === 0 ? 7 : now.getDay(); // 1=Lun, 7=Dim
-
-        // Vérifier si aujourd'hui est un jour de freeze
-        const freeze = config.freezeDays.includes(dayOfWeek);
-
-        setIsFreeze(freeze);
-        setCurrentDate(now);
+        setIsFreeze(data.isFreeze);
+        setCurrentDate(new Date());
 
         // Appliquer la classe au body
-        if (freeze) {
+        if (data.isFreeze) {
           document.body.classList.add('freeze');
           document.body.classList.remove('not-freeze');
         } else {
