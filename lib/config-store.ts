@@ -1,5 +1,4 @@
-import fs from 'fs';
-import path from 'path';
+import { redis } from './redis';
 
 export interface Config {
   freezeDays: number[];
@@ -9,32 +8,31 @@ const DEFAULT_CONFIG: Config = {
   freezeDays: [2, 3] // Mardi et Mercredi par défaut
 };
 
-const CONFIG_PATH = path.join(process.cwd(), 'config.json');
+const REDIS_KEY = 'freeze:config';
 
-/**
- * Reads config from config.json file (read-only on Vercel)
- * Falls back to defaults if file doesn't exist
- */
-export function getConfig(): Config {
+// Get configuration from Redis
+export async function getConfig(): Promise<Config> {
   try {
-    if (fs.existsSync(CONFIG_PATH)) {
-      const fileContents = fs.readFileSync(CONFIG_PATH, 'utf8');
-      return JSON.parse(fileContents);
+    const data = await redis.get(REDIS_KEY);
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (parsed && Array.isArray(parsed.freezeDays)) {
+        return parsed;
+      }
     }
+    // If no data in Redis, return defaults
+    return { ...DEFAULT_CONFIG };
   } catch (error) {
-    console.error('Failed to read config.json, using defaults:', error);
+    // Fallback to defaults on Redis error
+    return { ...DEFAULT_CONFIG };
   }
-  return { ...DEFAULT_CONFIG };
 }
 
-/**
- * Updates config.json file (only works in development/writable environments)
- * @throws Error if filesystem is read-only (like on Vercel)
- */
-export function setConfig(newConfig: Config): void {
+// Set configuration in Redis
+export async function setConfig(newConfig: Config): Promise<void> {
   try {
-    fs.writeFileSync(CONFIG_PATH, JSON.stringify(newConfig, null, 2), 'utf8');
+    await redis.set(REDIS_KEY, JSON.stringify(newConfig));
   } catch (error) {
-    throw new Error('Cannot write config in read-only environment');
+    throw new Error('Failed to save config to Redis');
   }
 }

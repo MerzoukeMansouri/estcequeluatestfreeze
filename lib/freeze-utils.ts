@@ -14,8 +14,8 @@ export function getCurrentDayOfWeek(): number {
  * Checks if the current day is a freeze day
  * @returns true if today is a freeze day, false otherwise
  */
-export function isCurrentlyFreeze(): boolean {
-  const config = getConfig();
+export async function isCurrentlyFreeze(): Promise<boolean> {
+  const config = await getConfig();
   const dayOfWeek = getCurrentDayOfWeek();
   return config.freezeDays.includes(dayOfWeek);
 }
