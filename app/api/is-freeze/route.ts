@@ -9,8 +9,9 @@ export async function GET() {
 
     return NextResponse.json({ isFreeze });
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to check freeze status';
     return NextResponse.json(
-      { error: 'Failed to check freeze status' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

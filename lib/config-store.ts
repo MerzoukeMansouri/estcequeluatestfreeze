@@ -20,11 +20,12 @@ export async function getConfig(): Promise<Config> {
         return parsed;
       }
     }
-    // If no data in Redis, return defaults
+    // If no data in Redis, return defaults (first time setup)
     return { ...DEFAULT_CONFIG };
   } catch (error) {
-    // Fallback to defaults on Redis error
-    return { ...DEFAULT_CONFIG };
+    // On Redis error, throw so caller knows there's a problem
+    const message = error instanceof Error ? error.message : 'Redis connection failed';
+    throw new Error(`Failed to read config from Redis: ${message}`);
   }
 }
 
