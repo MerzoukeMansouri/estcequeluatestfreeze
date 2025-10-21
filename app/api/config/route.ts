@@ -8,9 +8,18 @@ interface Config {
   freezeDays: number[];
 }
 
+const DEFAULT_CONFIG: Config = {
+  freezeDays: [2, 3] // Mardi et Mercredi par défaut
+};
+
 // GET: Retourne la configuration actuelle
 export async function GET() {
   try {
+    // Créer le fichier de config s'il n'existe pas
+    if (!fs.existsSync(CONFIG_PATH)) {
+      fs.writeFileSync(CONFIG_PATH, JSON.stringify(DEFAULT_CONFIG, null, 2), 'utf8');
+    }
+
     const fileContents = fs.readFileSync(CONFIG_PATH, 'utf8');
     const config: Config = JSON.parse(fileContents);
     return NextResponse.json(config);
