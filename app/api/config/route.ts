@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getConfig, setConfig, type Config } from '../../../lib/config-store';
 
+// Disable caching for this route
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // GET: Retourne la configuration actuelle
 export async function GET() {
   try {
