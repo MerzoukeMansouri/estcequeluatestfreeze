@@ -44,6 +44,9 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Copy config.json for freeze days configuration
+COPY --from=builder --chown=nextjs:nodejs /app/config.json ./config.json
+
 USER nextjs
 
 EXPOSE 3000
